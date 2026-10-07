@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <!-- PRIMARY SEO METADATA -->
+  <title>Reqix Documentation — Headless HTTP & JWT Auth Orchestration for Next.js</title>
+  <meta name="description" content="Production-grade, zero-dependency HTTP client and server-first JWT token refresh engine designed for Next.js App Router, React Server Components (RSC), Edge Middleware, and modern TypeScript runtimes.">
+  <meta name="keywords" content="Reqix, Next.js auth, JWT refresh token, React Server Components fetch, single-flight concurrency, HTTP client, zero-dependency fetch, Edge middleware refresh, TanStack Query">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://reqixdev.github.io/reqix/docs">
+  <link rel="preload" as="image" href="assets/reqix-logo.webp" type="image/webp">
+
+  <!-- OPEN GRAPH / SOCIAL -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://reqixdev.github.io/reqix/docs">
+  <meta property="og:title" content="Reqix Documentation — Headless HTTP & JWT Auth Orchestration">
+  <meta property="og:description" content="Zero-dependency, server-first data fetching and automated JWT token refresh engine with single-flight concurrency guarantees for Next.js.">
+  <meta property="og:site_name" content="Reqix Documentation">
+
+  <!-- TWITTER CARDS -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Reqix — Next.js HTTP & Auth Engine">
+  <meta name="twitter:description" content="Single-flight parallel deduplication, proactive Edge middleware token refresh, and zero-dependency RSC data fetching.">
+
+  <!-- SCHEMA.ORG STRUCTURED DATA -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Reqix",
+    "operatingSystem": "Cross-platform",
+    "applicationCategory": "DeveloperApplication",
+    "softwareVersion": "0.1.0",
+    "description": "Production-grade, zero-dependency HTTP client and server-first JWT token refresh engine designed for Next.js App Router and modern TypeScript runtimes.",
+    "url": "https://github.com/reqixdev/reqix",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": "reqix",
+    "version": "0.1.0",
+    "programmingLanguage": "TypeScript",
+    "codeRepository": "https://github.com/reqixdev/reqix",
+    "license": "https://opensource.org/licenses/MIT",
+    "description": "Headless, server-first auth and fetch orchestration for Next.js and modern TypeScript runtimes.",
+    "keywords": "Reqix, Next.js, JWT, Auth, Fetch, TypeScript, HTTP Client, TanStack Query"
+  }
+  </script>
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('reqix_theme');
+        if (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          saved = 'dark';
+        }
+        if (saved) {
+          document.documentElement.setAttribute('data-theme', saved);
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM (Neutral Light / Dark with 1920px Container)
+       ========================================================================== */
+    :root,
+    :root[data-theme="light"] {
+      --brand-dark: #121212;
+      --brand-light: #ffffff;
+      --bg-base: #ffffff;
+      --bg-surface: #ffffff;
+      --bg-muted: rgba(18, 18, 18, 0.05);
+      --border: rgba(18, 18, 18, 0.16);
+      --border-accent: #121212;
+      --text-heading: #121212;
+      --text-body: #121212;
+      --text-muted: rgba(18, 18, 18, 0.65);
+      --accent: #121212;
+      --accent-hover: #121212;
+      --accent-subtle: rgba(18, 18, 18, 0.06);
+      --accent-border: rgba(18, 18, 18, 0.25);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
+    }
+
+    :root[data-theme="dark"] {
+      --brand-dark: #121212;
+      --brand-light: #ffffff;
+      --bg-base: #121212;
+      --bg-surface: #121212;
+      --bg-muted: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.1);
+      --border-accent: #ffffff;
+      --text-heading: #ffffff;
+      --text-body: rgba(255, 255, 255, 0.86);
+      --text-muted: rgba(255, 255, 255, 0.62);
+      --accent: #ffffff;
+      --accent-hover: #ffffff;
+      --accent-subtle: rgba(255, 255, 255, 0.12);
+      --accent-border: rgba(255, 255, 255, 0.35);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-base);
+      color: var(--text-body);
+    }
+
+    /* TOP GLOBAL HEADER (1920px WIDESCREEN) */
+    .portal-header-wrapper {
+      position: relative;
+      z-index: 100;
+      background: var(--bg-base);
+      border-bottom: 1px solid var(--border);
+      height: 64px;
+      width: 100%;
+    }
+
+    .portal-header {
+      height: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+      color: var(--text-heading);
+    }
+
+    .brand-logo {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .brand-logo img {
+      display: block;
+      width: 104px;
+      height: auto;
+    }
+
+    :root[data-theme="dark"] .brand-logo img { filter: invert(1); }
+
+    .brand-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      border: 1px solid var(--accent-border);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* DYNAMIC VERSION DROPDOWN */
+    .version-selector-container {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--bg-muted);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.65rem;
+      border-radius: 9px;
+    }
+
+    .version-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .version-dropdown {
+      background: transparent;
+      border: none;
+      color: var(--text-heading);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      padding: 0.2rem 0.4rem;
+    }
+
+    .version-dropdown option {
+      background: var(--bg-surface);
+      color: var(--text-heading);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .standalone-link-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      transition: all 0.15s;
+    }
+
+    .standalone-link-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-subtle);
+    }
+
+    .install-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #14151a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.35rem 0.85rem;
+      border-radius: 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.78rem;
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .install-pill:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      background: #1c1d24;
+      transform: translateY(-1px);
+    }
+
+    .install-pill .install-prompt {
+      color: #10b981;
+      font-weight: 700;
+    }
+
+    .install-pill.copied {
+      background: rgba(16, 185, 129, 0.15) !important;
+      border-color: #10b981 !important;
+      color: #34d399 !important;
+    }
+
+    .github-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      text-decoration: none;
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-muted);
+      transition: all 0.15s;
+    }
+
+    .github-pill:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .theme-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      background: var(--bg-muted);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-heading);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--border);
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .theme-toggle-btn:active {
+      transform: translateY(0);
+    }
+
+    .theme-icon-svg {
+      pointer-events: none;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .theme-toggle-btn:hover .theme-icon-svg {
+      transform: rotate(15deg) scale(1.08);
+    }
+
+    /* Dark Mode: show Sun icon, hide Moon icon */
+    html[data-theme="dark"] .theme-icon-svg.sun-icon {
+      display: block;
+    }
+    html[data-theme="dark"] .theme-icon-svg.moon-icon {
+      display: none;
+    }
+
+    /* Light Mode (or default): show Moon icon, hide Sun icon */
+    html:not([data-theme="dark"]) .theme-icon-svg.sun-icon {
+      display: none;
+    }
+    html:not([data-theme="dark"]) .theme-icon-svg.moon-icon {
+      display: block;
+    }
+
+    /* MAIN VIEWPORT IFRAME */
+    .portal-main {
+      width: 100%;
+      height: calc(100vh - 64px);
+      position: relative;
+    }
+
+    .docs-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: var(--bg-base);
+    }
+
+    /* SEO FALLBACK & SEARCH CRAWLER OUTLINE */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* TOAST NOTIFICATION */
+    .toast-pill {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--text-heading);
+      color: var(--bg-base);
+      padding: 0.65rem 1.25rem;
+      border-radius: 10px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .toast-pill.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* MOBILE MENU BUTTON */
+    .mobile-menu-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: var(--bg-muted);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: var(--text-heading);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      padding: 0;
+    }
+
+    .mobile-menu-btn:hover {
+      background: var(--accent-subtle);
+      border-color: var(--accent);
+    }
+
+    .mobile-menu-btn .icon-close {
+      display: none;
+    }
+
+    .mobile-menu-btn.active .icon-menu {
+      display: none;
+    }
+
+    .mobile-menu-btn.active .icon-close {
+      display: block;
+    }
+
+    /* MOBILE DRAWER & BACKDROP */
+    .mobile-drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 150;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .mobile-drawer-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(340px, 86vw);
+      height: 100dvh;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border);
+      z-index: 200;
+      transform: translateX(100%);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -8px 0 32px rgba(0, 0, 0, 0.28);
+      overflow: hidden;
+    }
+
+    .mobile-drawer.open {
+      transform: translateX(0);
+    }
+
+    .mobile-drawer-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-muted);
+    }
+
+    .drawer-close-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-heading);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 700;
+      transition: all 0.15s;
+    }
+
+    .drawer-close-btn:hover {
+      background: var(--accent-subtle);
+      border-color: var(--accent);
+    }
+
+    .drawer-quick-actions {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      background: var(--bg-surface);
+    }
+
+    .drawer-action-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: space-between;
+    }
+
+    .drawer-links-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .drawer-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 1.25rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .drawer-nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .drawer-group-title {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      padding-left: 0.4rem;
+    }
+
+    .drawer-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 8px;
+      color: var(--text-heading);
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .drawer-nav-link:hover, .drawer-nav-link:active {
+      background: var(--accent-subtle);
+      color: var(--accent);
+    }
+
+    .drawer-nav-link.sub {
+      font-size: 0.8rem;
+      padding-left: 1.5rem;
+      color: var(--text-muted);
+    }
+
+    .drawer-nav-link.sub:hover {
+      color: var(--text-heading);
+    }
+
+    .drawer-nav-link.highlight {
+      font-weight: 700;
+      color: #8b5cf6;
+      background: rgba(139, 92, 246, 0.08);
+    }
+
+    /* RESPONSIVE MEDIA QUERIES */
+    @media (max-width: 768px) {
+      .portal-header {
+        padding: 0 1rem;
+        justify-content: space-between;
+        gap: 0.75rem;
+      }
+      /* Hide pills strictly inside portal-header on mobile */
+      .portal-header .brand-badge,
+      .portal-header .version-selector-container,
+      .portal-header .standalone-link-btn,
+      .portal-header .install-pill,
+      .portal-header .github-pill {
+        display: none !important;
+      }
+      .portal-header .header-actions {
+        display: flex !important;
+        align-items: center;
+        gap: 0.5rem;
+        margin-left: auto;
+      }
+      .mobile-menu-btn {
+        display: flex;
+      }
+
+      /* Explicitly ensure mobile drawer quick actions remain visible (matching Image 2) */
+      .mobile-drawer-header .brand-badge {
+        display: inline-block !important;
+      }
+      .drawer-quick-actions {
+        display: flex !important;
+      }
+      .drawer-quick-actions .version-selector-container {
+        display: flex !important;
+        width: 100% !important;
+      }
+      .drawer-quick-actions .install-pill {
+        display: flex !important;
+        width: 100% !important;
+        justify-content: flex-start;
+      }
+      .drawer-quick-actions .drawer-links-row {
+        display: flex !important;
+        width: 100% !important;
+      }
+      .drawer-quick-actions .drawer-links-row .github-pill,
+      .drawer-quick-actions .drawer-links-row .standalone-link-btn {
+        display: flex !important;
+        flex: 1;
+        justify-content: center;
+      }
+      .toast-pill {
+        right: 1rem;
+        bottom: 1rem;
+        max-width: calc(100vw - 2rem);
+      }
+      .portal-header-wrapper, .portal-header {
+        height: 56px;
+      }
+      .portal-main {
+        height: calc(100dvh - 56px);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP GLOBAL HEADER (1920px WIDESCREEN) -->
+  <div class="portal-header-wrapper">
+    <header class="portal-header">
+      <a href="index.html" class="brand-wrap">
+        <div class="brand-logo">
+          <img src="assets/reqix-logo.webp" width="104" height="35" alt="Reqix" decoding="async">
+        </div>
+        <span class="brand-badge">Docs</span>
+      </a>
+
+      <!-- DYNAMIC VERSION DROPDOWN (DESKTOP) -->
+      <div class="version-selector-container">
+        <span class="version-label">Version:</span>
+        <select id="doc-version-select" class="version-dropdown" onchange="switchDocVersion(this.value)">
+          <option value="reqix-v0.1.0.html" selected>v0.1.0 (Latest)</option>
+        </select>
+      </div>
+
+      <!-- DESKTOP ACTIONS -->
+      <div class="header-actions">
+        <!-- Direct Standalone File Link -->
+        <a id="standalone-link" href="reqix-v0.1.0.html" target="_blank" class="standalone-link-btn" title="Open active documentation file standalone in new tab">
+          <span>Open Standalone</span>
+          <span>↗</span>
+        </a>
+
+        <!-- Quick Install Pill -->
+        <div class="install-pill" id="portal-install-pill" onclick="copyInstallCmd('npm i reqix')" title="Click to copy install command">
+          <span class="install-prompt">$</span>
+          <span>npm i reqix</span>
+          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        </div>
+
+        <!-- GitHub Repo Link -->
+        <a href="https://github.com/reqixdev/reqix" target="_blank" class="github-pill">
+          <span>GitHub</span>
+          <span>★</span>
+        </a>
+
+        <!-- Dark / Light Theme Toggle (Icon-based) -->
+        <button id="theme-toggle" class="theme-toggle-btn" onclick="togglePortalTheme()" aria-label="Toggle dark / light theme" title="Toggle theme">
+          <svg class="theme-icon-svg sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="theme-icon-svg moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- MOBILE HAMBURGER BUTTON (VISIBLE ONLY ON MOBILE) -->
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle navigation menu" onclick="toggleMobileMenu()">
+        <svg class="icon-menu" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <svg class="icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </header>
+  </div>
+
+  <!-- MAIN DOCUMENTATION VIEWPORT -->
+  <main class="portal-main">
+    <iframe 
+      id="doc-viewport" 
+      src="reqix-v0.1.0.html" 
+      class="docs-frame" 
+      title="Reqix Documentation Viewport"
+      loading="eager"
+    ></iframe>
+  </main>
+
+  <!-- MOBILE NAVIGATION DRAWER & BACKDROP -->
+  <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop" onclick="closeMobileMenu()"></div>
+  <aside id="mobile-drawer" class="mobile-drawer" aria-label="Mobile Navigation">
+    <div class="mobile-drawer-header">
+      <div class="brand-wrap">
+        <div class="brand-logo">
+          <img src="assets/reqix-logo.webp" width="88" height="30" alt="Reqix">
+        </div>
+        <span class="brand-badge">Docs</span>
+      </div>
+      <button class="drawer-close-btn" onclick="closeMobileMenu()" aria-label="Close menu">✕</button>
+    </div>
+
+    <div class="drawer-quick-actions">
+      <div class="drawer-action-row">
+        <div class="version-selector-container" style="display:flex; width: 100%;">
+          <span class="version-label">Ver:</span>
+          <select id="drawer-version-select" class="version-dropdown" onchange="switchDocVersion(this.value)" style="flex:1;">
+            <option value="reqix-v0.1.0.html" selected>v0.1.0 (Latest)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="install-pill" onclick="copyInstallCmd('npm i reqix')">
+        <span class="install-prompt">$</span>
+        <span>npm i reqix</span>
+        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </div>
+
+      <div class="drawer-links-row">
+        <a href="https://github.com/reqixdev/reqix" target="_blank" class="github-pill" style="flex:1; justify-content:center;">★ GitHub</a>
+        <a id="drawer-standalone-link" href="reqix-v0.1.0.html" target="_blank" class="standalone-link-btn" style="flex:1; justify-content:center;">Standalone ↗</a>
+      </div>
+    </div>
+
+    <nav class="drawer-nav">
+      <div class="drawer-nav-group">
+        <div class="drawer-group-title">Getting Started</div>
+        <a href="#overview" class="drawer-nav-link" onclick="handleDrawerNav('#overview'); return false;">⚡ Overview</a>
+        <a href="#benchmarks" class="drawer-nav-link" onclick="handleDrawerNav('#benchmarks'); return false;">🚀 Speed & Benchmarks</a>
+        <a href="#installation" class="drawer-nav-link" onclick="handleDrawerNav('#installation'); return false;">📦 Installation</a>
+        <a href="#comparison" class="drawer-nav-link" onclick="handleDrawerNav('#comparison'); return false;">⚖️ NextAuth vs Reqix</a>
+      </div>
+
+      <div class="drawer-nav-group">
+        <div class="drawer-group-title">Mode 1: Pure Client</div>
+        <a href="#mode-pure-http" class="drawer-nav-link" onclick="handleDrawerNav('#mode-pure-http'); return false;">🌐 Pure Client Setup</a>
+        <a href="#http-config" class="drawer-nav-link sub" onclick="handleDrawerNav('#http-config'); return false;">• BaseURL & Config</a>
+        <a href="#http-methods" class="drawer-nav-link sub" onclick="handleDrawerNav('#http-methods'); return false;">• Methods (GET/POST/PUT/DEL)</a>
+        <a href="#http-interceptors" class="drawer-nav-link sub" onclick="handleDrawerNav('#http-interceptors'); return false;">• Interceptors & Retries</a>
+      </div>
+
+      <div class="drawer-nav-group">
+        <div class="drawer-group-title">Mode 2: Next.js Auth</div>
+        <a href="#mode-next-auth" class="drawer-nav-link" onclick="handleDrawerNav('#mode-next-auth'); return false;">🛡️ Next.js App Router Auth</a>
+        <a href="#step-1-server" class="drawer-nav-link sub" onclick="handleDrawerNav('#step-1-server'); return false;">1. Server Configuration</a>
+        <a href="#step-2-middleware" class="drawer-nav-link sub" onclick="handleDrawerNav('#step-2-middleware'); return false;">2. Edge Middleware</a>
+        <a href="#step-3-routes" class="drawer-nav-link sub" onclick="handleDrawerNav('#step-3-routes'); return false;">3. Route Handlers</a>
+        <a href="#step-4-rsc" class="drawer-nav-link sub" onclick="handleDrawerNav('#step-4-rsc'); return false;">4. Server Components (RSC)</a>
+        <a href="#step-5-actions" class="drawer-nav-link sub" onclick="handleDrawerNav('#step-5-actions'); return false;">5. Server Actions</a>
+        <a href="#step-6-client" class="drawer-nav-link sub" onclick="handleDrawerNav('#step-6-client'); return false;">6. Client Components</a>
+      </div>
+
+      <div class="drawer-nav-group">
+        <div class="drawer-group-title">Interactive Studio</div>
+        <a href="#playground" class="drawer-nav-link highlight" onclick="handleDrawerNav('#playground'); return false;">⚡ Live Studio & Preview</a>
+      </div>
+
+      <div class="drawer-nav-group">
+        <div class="drawer-group-title">Core Guarantees & Reference</div>
+        <a href="#tanstack-query" class="drawer-nav-link" onclick="handleDrawerNav('#tanstack-query'); return false;">⚛️ TanStack Query</a>
+        <a href="#single-flight" class="drawer-nav-link" onclick="handleDrawerNav('#single-flight'); return false;">✈️ Single-Flight Concurrency</a>
+        <a href="#two-tier" class="drawer-nav-link" onclick="handleDrawerNav('#two-tier'); return false;">⏱️ Two-Tier Refresh</a>
+        <a href="#api-reference" class="drawer-nav-link" onclick="handleDrawerNav('#api-reference'); return false;">📚 API Reference</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- SEARCH ENGINE ACCESSIBILITY OUTLINE (Indexed by Googlebot & Screen Readers) -->
+  <div class="sr-only">
+    <h1>Reqix Documentation — Headless HTTP & JWT Auth Orchestrator for Next.js</h1>
+    <p>Zero-dependency HTTP client and server-first JWT token refresh engine designed for Next.js App Router (RSC, Edge Middleware, Route Handlers, Server Actions) and modern TypeScript applications.</p>
+    <nav aria-label="Documentation Sections">
+      <ul>
+        <li><a href="reqix-v0.1.0.html#playground">Interactive Studio & Live Preview Sandbox</a></li>
+        <li><a href="reqix-v0.1.0.html#overview">Overview & Thundering Herd Solution</a></li>
+        <li><a href="reqix-v0.1.0.html#benchmarks">Speed & Performance Benchmarks (0ms cold start, <3.5KB)</a></li>
+        <li><a href="reqix-v0.1.0.html#installation">Installation for npm, pnpm, yarn, bun</a></li>
+        <li><a href="reqix-v0.1.0.html#comparison">Comparison Matrix vs Auth.js and axios-auth-refresh</a></li>
+        <li><a href="reqix-v0.1.0.html#mode-pure-http">Mode 1: Pure HTTP Client (GET, POST, PUT, DELETE, Retries, Interceptors)</a></li>
+        <li><a href="reqix-v0.1.0.html#mode-next-auth">Mode 2: Next.js App Router Full Auth (Steps 1 to 6)</a></li>
+        <li><a href="reqix-v0.1.0.html#tanstack-query">TanStack Query (React Query) Integration</a></li>
+        <li><a href="reqix-v0.1.0.html#single-flight">Single-Flight Concurrency Guarantee & Two-Tier Refresh</a></li>
+        <li><a href="reqix-v0.1.0.html#api-reference">API Reference & TypeScript Type Definitions</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast-pill">Copied to clipboard! ✓</div>
+
+  <!-- INTERACTIVE ORCHESTRATION SCRIPT -->
+  <script>
+    const DEFAULT_VERSION_FILE = 'reqix-v0.1.0.html';
+
+    // Mobile Drawer Handlers
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobile-drawer');
+      const backdrop = document.getElementById('mobile-drawer-backdrop');
+      const btn = document.getElementById('mobile-menu-btn');
+      const isOpen = drawer && drawer.classList.contains('open');
+      if (isOpen) {
+        closeMobileMenu();
+      } else {
+        if (drawer) drawer.classList.add('open');
+        if (backdrop) backdrop.classList.add('open');
+        if (btn) btn.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeMobileMenu() {
+      const drawer = document.getElementById('mobile-drawer');
+      const backdrop = document.getElementById('mobile-drawer-backdrop');
+      const btn = document.getElementById('mobile-menu-btn');
+      if (drawer) drawer.classList.remove('open');
+      if (backdrop) backdrop.classList.remove('open');
+      if (btn) btn.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function handleDrawerNav(hash) {
+      closeMobileMenu();
+      const frame = document.getElementById('doc-viewport');
+      if (frame && frame.contentWindow) {
+        try {
+          const doc = frame.contentWindow.document;
+          const target = doc.querySelector(hash);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else {
+            frame.contentWindow.location.hash = hash;
+          }
+        } catch (e) {
+          frame.contentWindow.location.hash = hash;
+        }
+      }
+    }
+
+    // 1. Initialize version and theme on load
+    function initPortal() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const requestedVersion = urlParams.get('v') || localStorage.getItem('reqix_active_version') || DEFAULT_VERSION_FILE;
+
+      const select = document.getElementById('doc-version-select');
+      const drawerSelect = document.getElementById('drawer-version-select');
+      if (select) select.value = requestedVersion;
+      if (drawerSelect) drawerSelect.value = requestedVersion;
+
+      loadVersion(requestedVersion, false);
+
+      // Restore saved theme
+      const savedTheme = localStorage.getItem('reqix_theme') || 'light';
+      applyTheme(savedTheme);
+    }
+
+    // 2. Switch documentation version on dropdown change
+    function switchDocVersion(versionFile) {
+      localStorage.setItem('reqix_active_version', versionFile);
+      const select = document.getElementById('doc-version-select');
+      const drawerSelect = document.getElementById('drawer-version-select');
+      if (select) select.value = versionFile;
+      if (drawerSelect) drawerSelect.value = versionFile;
+      loadVersion(versionFile, true);
+    }
+
+    // 3. Load version into iframe and update links
+    function loadVersion(versionFile, updateUrl) {
+      const frame = document.getElementById('doc-viewport');
+      const standaloneLink = document.getElementById('standalone-link');
+      const drawerStandalone = document.getElementById('drawer-standalone-link');
+
+      if (frame) {
+        const hash = window.location.hash;
+        frame.src = versionFile + (hash ? hash : '');
+      }
+
+      if (standaloneLink) standaloneLink.href = versionFile;
+      if (drawerStandalone) drawerStandalone.href = versionFile;
+
+      if (updateUrl && history.replaceState) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('v', versionFile);
+        history.replaceState(null, '', url.toString());
+      }
+    }
+
+    // 4. Synchronize theme between portal shell and iframe document
+    function togglePortalTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = current === 'light' ? 'dark' : 'light';
+      applyTheme(next);
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      try {
+        localStorage.setItem('reqix_theme', theme);
+      } catch (e) {}
+
+      const frame = document.getElementById('doc-viewport');
+      if (frame && frame.contentWindow) {
+        try {
+          frame.contentWindow.postMessage({ type: 'REQIX_THEME', theme: theme }, '*');
+        } catch (e) {}
+        try {
+          frame.contentWindow.document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {}
+      }
+    }
+
+    // Listen to theme updates dispatched by iframe
+    window.addEventListener('message', function (e) {
+      if (e.data && e.data.type === 'REQIX_THEME') {
+        document.documentElement.setAttribute('data-theme', e.data.theme);
+        try {
+          localStorage.setItem('reqix_theme', e.data.theme);
+        } catch (err) {}
+      }
+    });
+
+    const frameEl = document.getElementById('doc-viewport');
+    if (frameEl) {
+      frameEl.addEventListener('load', function () {
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        try {
+          this.contentWindow.postMessage({ type: 'REQIX_THEME', theme: current }, '*');
+        } catch (e) {}
+        try {
+          this.contentWindow.document.documentElement.setAttribute('data-theme', current);
+        } catch (e) {}
+      });
+    }
+
+    // 5. Copy helper
+    function copyInstallCmd(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Copied: ' + text + ' ✓');
+        const pill = document.getElementById('portal-install-pill');
+        if (pill) {
+          pill.classList.add('copied');
+          setTimeout(() => pill.classList.remove('copied'), 2000);
+        }
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2200);
+    }
+
+    window.addEventListener('DOMContentLoaded', initPortal);
+  </script>
+</body>
+</html>

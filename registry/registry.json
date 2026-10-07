@@ -1,0 +1,63 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "reqix",
+  "homepage": "https://github.com/reqixdev/reqix",
+  "items": [
+    {
+      "name": "auth-middleware",
+      "type": "registry:file",
+      "title": "Auth Middleware",
+      "description": "Next.js Edge middleware for proactive token refresh and cookie forwarding",
+      "dependencies": ["reqix"],
+      "files": [
+        {
+          "path": "registry/middleware.ts",
+          "target": "middleware.ts",
+          "type": "registry:file"
+        }
+      ]
+    },
+    {
+      "name": "auth-route-handler",
+      "type": "registry:file",
+      "title": "Auth Route Handler",
+      "description": "Next.js Route Handler for login, refresh, and logout endpoints",
+      "dependencies": ["reqix"],
+      "files": [
+        {
+          "path": "registry/route-handler.ts",
+          "target": "app/api/auth/[...reqix]/route.ts",
+          "type": "registry:file"
+        }
+      ]
+    },
+    {
+      "name": "login-form",
+      "type": "registry:component",
+      "title": "Login Form",
+      "description": "React client login form component communicating with reqix route handlers",
+      "dependencies": ["reqix", "react"],
+      "files": [
+        {
+          "path": "registry/login-form.tsx",
+          "target": "components/login-form.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "use-session",
+      "type": "registry:hook",
+      "title": "useSession Hook",
+      "description": "React hook for accessing session state and reacting to session updates",
+      "dependencies": ["reqix", "react"],
+      "files": [
+        {
+          "path": "registry/use-session.ts",
+          "target": "hooks/use-session.ts",
+          "type": "registry:hook"
+        }
+      ]
+    }
+  ]
+}
